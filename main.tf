@@ -107,7 +107,7 @@ resource "random_string" "str" {
   special = false
   upper   = false
 
-   provider = {
+  provider = {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = ">=3.87.0"

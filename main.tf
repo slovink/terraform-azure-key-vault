@@ -101,19 +101,14 @@ resource "azurerm_private_endpoint" "pep" {
 
 
 
-resource "random_string" "str" {
-  count   = var.enable_private_endpoint ? 1 : 0
-  length  = 6
-  special = false
-  upper   = false
-
-  provider = {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">=3.87.0"
-    }
-  }
-}
+#resource "random_string" "str" {
+#  count   = var.enable_private_endpoint ? 1 : 0
+#  length  = 6
+#  special = false
+#  upper   = false
+#
+#
+#}
 
 
 data "azurerm_private_endpoint_connection" "private-ip" {

@@ -4,10 +4,6 @@ data "azurerm_resource_group" "default" {
   name = var.resource_group_name
 }
 
-data "azurerm_subscription" "primary" {
-}
-
-
 locals {
   resource_group_name = data.azurerm_resource_group.default.name
   location            = data.azurerm_resource_group.default.location
@@ -15,7 +11,7 @@ locals {
 
 module "labels" {
 
-  source  = "git::git@github.com:slovink/terraform-azure-labels.git"
+  source = "git::git@github.com:slovink/terraform-azure-labels.git?ref=1.0.0"
 
   name        = var.name
   environment = var.environment
@@ -92,7 +88,7 @@ resource "azurerm_private_endpoint" "pep" {
   private_service_connection {
     name                           = format("%s-kv-privatelink", module.labels.id)
     is_manual_connection           = false
-    private_connection_resource_id = join("", azurerm_key_vault.key_vault.*.id)
+    private_connection_resource_id = join("", azurerm_key_vault.key_vault[*].id)
     subresource_names              = ["vault"]
   }
 
@@ -110,12 +106,18 @@ resource "random_string" "str" {
   length  = 6
   special = false
   upper   = false
+  provider = {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=3.87.0"
+    }
+  }
 }
 
 
 data "azurerm_private_endpoint_connection" "private-ip" {
   count               = var.enabled && var.enable_private_endpoint ? 1 : 0
-  name                = join("", azurerm_private_endpoint.pep.*.name)
+  name                = join("", azurerm_private_endpoint.pep[*].name)
   resource_group_name = local.resource_group_name
   depends_on          = [azurerm_key_vault.key_vault]
 }
@@ -131,7 +133,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vent-link" {
   count                 = var.enabled && var.enable_private_endpoint ? 1 : 0
   name                  = "mydnslink"
   resource_group_name   = local.resource_group_name
-  private_dns_zone_name = var.existing_private_dns_zone == null ? join("", azurerm_private_dns_zone.dnszone.*.name) : var.existing_private_dns_zone
+  private_dns_zone_name = var.existing_private_dns_zone == null ? join("", azurerm_private_dns_zone.dnszone[*].name) : var.existing_private_dns_zone
   virtual_network_id    = var.virtual_network_id
   tags                  = module.labels.tags
 }
@@ -139,11 +141,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vent-link" {
 
 resource "azurerm_private_dns_a_record" "arecord" {
   count               = var.enabled && var.enable_private_endpoint ? 1 : 0
-  name                = join("", azurerm_key_vault.key_vault.*.name)
-  zone_name           = var.existing_private_dns_zone == null ? join("", azurerm_private_dns_zone.dnszone.*.name) : var.existing_private_dns_zone
+  name                = join("", azurerm_key_vault.key_vault[*].name)
+  zone_name           = var.existing_private_dns_zone == null ? join("", azurerm_private_dns_zone.dnszone[*].name) : var.existing_private_dns_zone
   resource_group_name = local.resource_group_name
   ttl                 = 3600
-  records             = [data.azurerm_private_endpoint_connection.private-ip.0.private_service_connection.0.private_ip_address]
+  records             = [data.azurerm_private_endpoint_connection.private-ip[0].private_service_connection[0].private_ip_address]
   tags                = module.labels.tags
 
   lifecycle {
@@ -163,15 +165,15 @@ resource "azurerm_user_assigned_identity" "example" {
 
 resource "azurerm_role_assignment" "aks_user_assigned" {
   count                = var.enabled ? 1 : 0
-  principal_id         = join("", azurerm_user_assigned_identity.example.*.principal_id)
-  scope                = join("", azurerm_key_vault.key_vault.*.id)
+  principal_id         = join("", azurerm_user_assigned_identity.example[*].principal_id)
+  scope                = join("", azurerm_key_vault.key_vault[*].id)
   role_definition_name = "Reader"
 }
 
 resource "azurerm_key_vault_key" "example" {
   count        = var.enabled ? 1 : 0
   name         = format("mid-keyvault-%s", module.labels.id)
-  key_vault_id = join("", azurerm_key_vault.key_vault.*.id)
+  key_vault_id = join("", azurerm_key_vault.key_vault[*].id)
   key_type     = "RSA"
   key_size     = 2048
 

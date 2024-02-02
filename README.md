@@ -7,7 +7,7 @@
     Terraform azure key-vault
 </h1>
 
-<p align="center" style="font-size: 1.2rem;"> 
+<p align="center" style="font-size: 1.2rem;">
     Terraform module to create key-vault resource on azure.
      </p>
 
@@ -118,6 +118,10 @@ module "vault" {
 }
 
   ```
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/slovink/terraform-azure-key-vault/blob/krishan/LICENSE) file for details.
+
 
 
 

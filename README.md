@@ -123,7 +123,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 
 ## Examples
-For detailed examples on how to use this module, please refer to the [Examples](https://github.com/slovink/terraform-azure-key-valut/tree/dev/_example) directory within this repository.
+For detailed examples on how to use this module, please refer to the [Examples](https://github.com/slovink/terraform-azure-key-vault/blob/dev/_example) directory within this repository.
 
 
 

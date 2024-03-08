@@ -3,7 +3,7 @@ provider "azurerm" {
 }
 
 module "resource_group" {
-  source  = "git::git@github.com:slovink/terraform-azure-resource-group.git"
+  source = "git::git@github.com:slovink/terraform-azure-resource-group.git?ref=1.0.0"
 
   label_order = ["name", "environment"]
   name        = "rg"
@@ -14,7 +14,7 @@ module "resource_group" {
 
 #Vnet
 module "vnet" {
-  source  = "git::git@github.com:slovink/terraform-azure-vnet.git"
+  source = "git::git@github.com:slovink/terraform-azure-vnet.git?ref=1.0.0"
 
   name        = "app"
   environment = "example"
@@ -26,28 +26,28 @@ module "vnet" {
   enable_ddos_pp      = false
 
   #subnet
-  subnet_names                  = ["subnet1"]
-  subnet_prefixes               = ["10.0.1.0/24"]
-  disable_bgp_route_propagation = false
+  #  subnet_names                  = ["subnet1"]
+  #  subnet_prefixes               = ["10.0.1.0/24"]
+  #  disable_bgp_route_propagation = false
+  #
+  #
+  #  enabled_route_table = false
+  #  routes              = [
+  #    {
+  #      name           = "rt-test"
+  #      address_prefix = "0.0.0.0/0"
+  #      next_hop_type  = "Internet"
+  #    }
+  #  ]
 
-  # routes
-  enabled_route_table = false
-  routes = [
-    {
-      name           = "rt-test"
-      address_prefix = "0.0.0.0/0"
-      next_hop_type  = "Internet"
-    }
-  ]
 }
-
 
 #Key Vault
 module "vault" {
   depends_on = [module.resource_group, module.vnet]
   source     = "./.."
 
-  name        = "annkkdsovvdcc"
+  name        = "user"
   environment = "test"
   label_order = ["name", "environment", ]
 
@@ -58,8 +58,8 @@ module "vault" {
 
   sku_name = "standard"
 
-  subnet_id          = module.vnet.vnet_subnets[0]
-  virtual_network_id = module.vnet.vnet_id[0]
+  subnet_id          = module.vault.id
+  virtual_network_id = module.vnet.id
   #private endpoint
   enable_private_endpoint = true
 

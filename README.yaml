@@ -1,0 +1,109 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name : Terraform AZURE KEY VAULT
+
+# License of this project
+license: "MIT"
+
+# Canonical GitHub repo
+github_repo: git@github.com:slovink/terraform-azure-key-vault.git
+
+# Badges to display
+badges:
+  - name: "Terraform"
+    image: "https://img.shields.io/badge/Terraform-v1.7.4-green"
+    url: "https://www.terraform.io"
+  - name: "Licence"
+    image: "https://img.shields.io/badge/License-MIT-blue.svg"
+    url: "https://github.com/slovink/terraform-azure-key-valut/blob/master/LICENSE"
+
+#  description of this project
+description: |-
+  Terraform module to create Azure key vault service resource on AZURE.
+# extra content
+include:
+  - "terraform.md"
+
+# How to use this project
+# How to use this project
+usage: |-
+  Here are some examples of how you can use this module in your inventory structure:
+  ### azure key-vault
+  ```hcl
+
+    # Basic
+   module "vault" {
+    depends_on = [module.resource_group, module.vnet]
+    source     = "./.."
+
+    name        = "user"
+    environment = "test"
+    label_order = ["name", "environment", ]
+
+    resource_group_name = module.resource_group.resource_group_name
+
+    purge_protection_enabled    = false
+    enabled_for_disk_encryption = true
+
+    sku_name = "standard"
+
+    subnet_id          = module.vault.id
+    virtual_network_id = module.vnet.id
+    #private endpoint
+    enable_private_endpoint = true
+
+    #access_policy
+    access_policy = [
+    {
+    object_id = ""
+   key_permissions = [
+   "Get",
+   "List",
+   "Update",
+   "Create",
+   "Import",
+   "Delete",
+   "Recover",
+   "Backup",
+   "Restore",
+   "UnwrapKey",
+   "WrapKey",
+
+   ]
+    certificate_permissions = [
+   "Get",
+   "List",
+   "Update",
+   "Create",
+   "Import",
+   "Delete",
+   "Recover",
+   "Backup",
+   "Restore",
+   "ManageContacts",
+   "ManageIssuers",
+   "GetIssuers",
+    "ListIssuers",
+    "SetIssuers",
+    "DeleteIssuers"
+    ]
+    secret_permissions = [
+    "Get",
+    "List",
+    "Set",
+    "Delete",
+    "Recover",
+    "Backup",
+    "Restore"
+    ]
+    storage_permissions = []
+
+   }
+   ]
+  }
+  ```

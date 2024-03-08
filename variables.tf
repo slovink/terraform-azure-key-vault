@@ -6,6 +6,7 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
+
 variable "environment" {
   type        = string
   default     = ""
@@ -44,11 +45,11 @@ variable "resource_group_name" {
 }
 
 
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "A map of tags to add to all resources"
-}
+#variable "tags" {
+#  type        = map(string)
+#  default     = {}
+#  description = "A map of tags to add to all resources"
+#}
 
 variable "sku_name" {
   type        = string
@@ -93,7 +94,8 @@ variable "network_acls_subnet_ids" {
 }
 
 variable "secrets" {
-  default     = {}
+  type        = string
+  default     = ""
   description = "List of secrets for be created"
 }
 
@@ -103,17 +105,17 @@ variable "soft_delete_retention_days" {
   description = "The number of days that items should be retained for once soft-deleted. The valid value can be between 7 and 90 days"
 
 }
-variable "access_policies" {
-  type = list(object({
-    object_id               = string,
-    certificate_permissions = list(string),
-    key_permissions         = list(string),
-    secret_permissions      = list(string),
-    storage_permissions     = list(string),
-  }))
-  default     = []
-  description = "Map of access policies for an object_id (user, service principal, security group) to backend."
-}
+#variable "access_policies" {
+#  type = list(object({
+#    object_id               = string,
+#    certificate_permissions = list(string),
+#    key_permissions         = list(string),
+#    secret_permissions      = list(string),
+#    storage_permissions     = list(string),
+#  }))
+#  default     = []
+#  description = "Map of access policies for an object_id (user, service principal, security group) to backend."
+#}
 
 variable "access_policy" {
   type = list(object({
@@ -135,11 +137,11 @@ variable "enable_private_endpoint" {
   description = "Manages a Private Endpoint to Azure database for MySQL"
 }
 
-variable "virtual_network_name" {
-  type        = string
-  default     = ""
-  description = "The name of the virtual network"
-}
+#variable "virtual_network_name" {
+#  type        = string
+#  default     = ""
+#  description = "The name of the virtual network"
+#}
 variable "virtual_network_id" {
   type        = string
   default     = ""
@@ -149,7 +151,7 @@ variable "virtual_network_id" {
 variable "subnet_id" {
   type        = string
   default     = ""
-  description = "The resource ID of the subnet"
+  description = "The rvirtual_network_idesource ID of the subnet"
 }
 
 variable "existing_private_dns_zone" {
